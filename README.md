@@ -73,7 +73,7 @@ For GKI flashing concepts and manager setup, see:
 
 | Component | Version | Download |
 |----------|---------|----------|
-| 🔐 **SukiSU Ultra manager** | **v4.2.0** (versionCode `40899`) | [SukiSU-Ultra v4.2.0](https://github.com/SukiSU-Ultra/SukiSU-Ultra/releases/tag/v4.2.0) |
+| 🔐 **SukiSU Ultra manager** | **v4.2.0** (versionCode `40900`) | [SukiSU-Ultra v4.2.0](https://github.com/SukiSU-Ultra/SukiSU-Ultra/releases/tag/v4.2.0) |
 | 🧠 **SukiSU kernel driver** | **builtin** `b20dee702` (UAPI v2, same handshake as manager v4.2.0) | Built into this kernel |
 | 🧩 **KPM** (KernelPatch) | **v0.13.0** (`patch_linux` + `kpimg`) | [SukiSU_KernelPatch_patch 0.13.0](https://github.com/SukiSU-Ultra/SukiSU_KernelPatch_patch/releases/tag/0.13.0) |
 | 🛡️ **SUSFS** | **v2.3.0** (`18fe1544` on `android13-5.10`) + userspace module | [SUSFS-FOR-KERNELSU](https://github.com/sidex15/susfs4ksu-module) |
@@ -132,7 +132,7 @@ After the kernel boots and SukiSU shows built-in + KPM, install these three modu
 
 ### Recommended Root Manager
 
-Use **[SukiSU Ultra Manager v4.2.0](https://github.com/SukiSU-Ultra/SukiSU-Ultra/releases/tag/v4.2.0)** (versionCode `40899`). The kernel driver is pinned to SukiSU **builtin** commit `b20dee702` (not the `v4.2.0` tag on `main`), and KPM is **v0.13.0**.
+Use **[SukiSU Ultra Manager v4.2.0](https://github.com/SukiSU-Ultra/SukiSU-Ultra/releases/tag/v4.2.0)** (versionCode `40900`). The kernel driver is pinned to SukiSU **builtin** commit `b20dee702` (not the `v4.2.0` tag on `main`), and KPM is **v0.13.0**.
 
 ### Verified working state (Pixel 6 Pro / 6a)
 
@@ -295,6 +295,7 @@ Recommended usage order (stability-first):
 
 Available options in the action menu:
 
+- `KSUN+SUSFS+BBG+NET`: Everything except DS (**workflow default**, no VINTF warning at boot)
 - `KSUN+SUSFS+BBG+NET+DS`: Enable all five optional groups
 - `KSUN+SUSFS+BBG`: Enable SukiSU Ultra + SUSFS + Baseband Guard
 - `KSUN+SUSFS+NET`: Enable SukiSU Ultra + SUSFS + networking
@@ -306,6 +307,8 @@ Available options in the action menu:
 - `KSUN`: Enable SukiSU Ultra only
 - `NONE`: Disable all five optional groups above
 - `FULL`: Alias for enabling all optional groups (same effective behavior as `KSUN+SUSFS+BBG+NET+DS`)
+
+Any option with `DS` sets `CONFIG_SYSVIPC=y`, which AOSP `android-base.config` forbids. The boot-time VINTF check then fails (logcat: `Vendor interface is incompatible`) and Android shows "There's an internal problem with your device" on every boot. Nothing stops working; it is only the warning. NET no longer sets the equally forbidden `CONFIG_IP6_NF_NAT` / `IP6_NF_TARGET_MASQUERADE`.
 
 Notes:
 

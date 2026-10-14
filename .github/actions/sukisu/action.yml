@@ -9,6 +9,10 @@ inputs:
     description: 'Tag whose commit count drives KSU_VERSION (must match the manager APK)'
     required: false
     default: "v4.2.0"
+  ksu_version_code:
+    description: 'Numeric KSU_VERSION baked into the driver (must equal the release manager APK versionCode)'
+    required: false
+    default: "40900"
 
 runs:
   using: composite
@@ -22,10 +26,14 @@ runs:
         # builtin b20dee702 (2026-09-13) speaks Manager v4.2.0:
         # KERNEL_SU_UAPI_VERSION=2, KSU_APP_PROFILE_VER=4, and still has
         # config KSU_SUSFS. Do not pin tag v4.2.0 (main): that tree drops
-        # kernel-side susfs. ksu_version_ref must stay v4.2.0 so KSU_VERSION
-        # is 40899 (40000 + 3714 - 2815), matching the manager versionCode.
+        # kernel-side susfs.
+        # The release APK SukiSU_v4.2.0_40900 is one above what the Makefile
+        # derives from tag v4.2.0 (40000 + 3714 - 2815 = 40899), and the
+        # Makefile also counts commits through the GitHub API at build time.
+        # Pin the number so the manager does not report a version mismatch.
         PINNED_SUKISU_SRC="b20dee702"
         SUKISU_VER="${{ inputs.ksu_version_ref }}"
+        SUKISU_CODE="${{ inputs.ksu_version_code }}"
         SUKISU_INPUT="$PINNED_SUKISU_SRC"
 
         echo "Using SukiSU Ultra ref: $SUKISU_INPUT (pinned builtin)"
@@ -70,6 +78,12 @@ runs:
         if [ -n "$KSU_MK" ]; then
           sed -i "s|^REPO_BRANCH[[:space:]]*:=.*|REPO_BRANCH := $SUKISU_VER|" "$KSU_MK"
           echo "Pinned SukiSU REPO_BRANCH -> $SUKISU_VER in ${KSU_MK#KernelSU/}"
+          if ! grep -qE '^KSU_VERSION[[:space:]]*:=' "$KSU_MK"; then
+            echo "ERROR: No KSU_VERSION assignment in ${KSU_MK#KernelSU/} - cannot pin versionCode"
+            exit 1
+          fi
+          sed -i "s|^KSU_VERSION[[:space:]]*:=.*|KSU_VERSION     := $SUKISU_CODE|" "$KSU_MK"
+          echo "Pinned SukiSU KSU_VERSION -> $SUKISU_CODE in ${KSU_MK#KernelSU/}"
         else
           echo "ERROR: No REPO_BRANCH found in KernelSU/kernel/{Kbuild,Makefile} - cannot pin KSU_VERSION"
           exit 1

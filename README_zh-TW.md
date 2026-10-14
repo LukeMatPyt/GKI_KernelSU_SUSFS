@@ -73,7 +73,7 @@ GKI 刷機概念與管理器設定可參考：
 
 | 元件 | 支援版本 | 下載 |
 |------|----------|------|
-| 🔐 **SukiSU Ultra 管理器** | **v4.2.0**（versionCode `40899`） | [SukiSU-Ultra v4.2.0](https://github.com/SukiSU-Ultra/SukiSU-Ultra/releases/tag/v4.2.0) |
+| 🔐 **SukiSU Ultra 管理器** | **v4.2.0**（versionCode `40900`） | [SukiSU-Ultra v4.2.0](https://github.com/SukiSU-Ultra/SukiSU-Ultra/releases/tag/v4.2.0) |
 | 🧠 **SukiSU kernel driver** | **builtin** `b20dee702`（UAPI v2，與管理器 v4.2.0 同一組 handshake） | 已編進此核心 |
 | 🧩 **KPM**（KernelPatch） | **v0.13.0**（`patch_linux` + `kpimg`） | [SukiSU_KernelPatch_patch 0.13.0](https://github.com/SukiSU-Ultra/SukiSU_KernelPatch_patch/releases/tag/0.13.0) |
 | 🛡️ **SUSFS** | **v2.3.0**（`android13-5.10` 為 `18fe1544`）+ 使用者空間模組 | [SUSFS-FOR-KERNELSU](https://github.com/sidex15/susfs4ksu-module) |
@@ -132,7 +132,7 @@ adb shell uname -a
 
 ### 建議使用的 Root 管理工具
 
-請用 **[SukiSU Ultra Manager v4.2.0](https://github.com/SukiSU-Ultra/SukiSU-Ultra/releases/tag/v4.2.0)**（versionCode `40899`）。核心 driver 固定釘在 SukiSU **builtin** commit `b20dee702`（不是 `main` 上的 tag `v4.2.0`），KPM 為 **v0.13.0**。
+請用 **[SukiSU Ultra Manager v4.2.0](https://github.com/SukiSU-Ultra/SukiSU-Ultra/releases/tag/v4.2.0)**（versionCode `40900`）。核心 driver 固定釘在 SukiSU **builtin** commit `b20dee702`（不是 `main` 上的 tag `v4.2.0`），KPM 為 **v0.13.0**。
 
 ### 驗證成功畫面（Pixel 6 Pro / 6a）
 
@@ -265,6 +265,7 @@ SukiSU app 畫面判讀方式：
 
 Actions 選單中各選項意義：
 
+- `KSUN+SUSFS+BBG+NET`：除了 DS 以外全開（**workflow 預設**，開機不會跳 VINTF 提示）
 - `KSUN+SUSFS+BBG+NET+DS`：啟用上述五個功能群組
 - `KSUN+SUSFS+BBG`：啟用 SukiSU Ultra + SUSFS + BBG
 - `KSUN+SUSFS+NET`：啟用 SukiSU Ultra + SUSFS + NET
@@ -276,6 +277,8 @@ Actions 選單中各選項意義：
 - `KSUN`：只啟用 SukiSU Ultra
 - `NONE`：停用上述五個可選群組
 - `FULL`：等同全開（效果同 `KSUN+SUSFS+BBG+NET+DS`）
+
+含 `DS` 的選項會開 `CONFIG_SYSVIPC=y`，這是 AOSP `android-base.config` 禁止的設定。開機時 VINTF 檢查會失敗（logcat：`Vendor interface is incompatible`），每次開機跳「There's an internal problem with your device」。功能照常，只是會有這個提示。NET 已經拿掉同樣被禁止的 `CONFIG_IP6_NF_NAT`／`IP6_NF_TARGET_MASQUERADE`。
 
 注意：
 

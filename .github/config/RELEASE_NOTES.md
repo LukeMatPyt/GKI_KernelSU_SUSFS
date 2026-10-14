@@ -25,7 +25,7 @@ Kernel-based root for Android GKI devices. This release pins the **builtin** dri
 Manager: {{KSU_MANAGER}}
 
 > [!IMPORTANT]
-> Use SukiSU Ultra Manager **v4.2.0** (versionCode `40899`). This driver is builtin `b20dee702`, not the `v4.2.0` tag on `main`.
+> Use SukiSU Ultra Manager **v4.2.0** (versionCode `40900`). This driver is builtin `b20dee702`, not the `v4.2.0` tag on `main`.
 
 **Version**  
 `{{KSU_VERSION}}`
