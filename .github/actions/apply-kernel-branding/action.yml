@@ -37,6 +37,6 @@ runs:
           KERNEL_STRING="$KERNEL_PART.${{ inputs.sublevel }}-$ANDROID_PART"
           sed -i '$d' scripts/setlocalversion && echo "echo \"$KERNEL_STRING-Wild$BUILD_VER_SUFFIX\"" >> scripts/setlocalversion
         else
-          sed -i '$d' scripts/setlocalversion && echo "echo \"-$ANDROID_PART-Wild$BUILD_VER_SUFFIX\"" >> scripts/setlocalversion
+          sed -i '$d' scripts/setlocalversion && echo "echo \"-android14-11-gfa1d6308d1fe-ab14691759\"" >> scripts/setlocalversion
         fi
         chmod +x scripts/setlocalversion
